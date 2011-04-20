@@ -41,8 +41,6 @@ err
 *.mode1v3
 *.pbxuser
 Makefile
-Makefile.Sooloos
-Makefile.SooloosRoot
 vc90.pdb
 vc100.pdb
 broocompiler_debug
@@ -53,7 +51,6 @@ broocompiler_debug
 GenmakeMSBuildTasks.dll
 *.log.txt
 *.fsyacc.output
-WebClient/src/Sooloos/Msg
 *_defunct.sooschema
 *.pidb
 *.mdb
@@ -61,11 +58,6 @@ WebClient/src/Sooloos/Msg
 broocompiler_atlas_cache
 local.properties
 gen
-*.sooloosplugin
 xcuserdata
 *.perspectivev3
-SooloosMobile/android/libs
-SooloosMobile/webos/enyo*
-SooloosMobile/webos/BUILD
-SooloosMobile/webos/app/mono
-SooloosMobile/iOS/Sooloos Mobile/build/
+Makefile.*
