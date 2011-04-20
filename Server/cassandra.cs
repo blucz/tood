@@ -751,6 +751,118 @@ namespace Cassandra
             return Get(key, path, DefaultConsistencyLevel); 
         }
 
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out SuperColumn ret) {
+            try {
+                ret = Get(key, path, consistencylevel).SuperColumn;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = null;
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out SuperColumn ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out int ret) {
+            try {
+                ret = (int)Get(key, path, consistencylevel).Column.Value;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = default(int);
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out int ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out string ret) {
+            try {
+                ret = (string)Get(key, path, consistencylevel).Column.Value;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = default(string);
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out string ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out double ret) {
+            try {
+                ret = (double)Get(key, path, consistencylevel).Column.Value;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = default(double);
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out double ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out bool ret) {
+            try {
+                ret = (bool)Get(key, path, consistencylevel).Column.Value;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = default(bool);
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out bool ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out long ret) {
+            try {
+                ret = (long)Get(key, path, consistencylevel).Column.Value;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = default(long);
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out long ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out Column ret) {
+            try {
+                ret = Get(key, path, consistencylevel).Column;
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = null;
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out Column ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
+        public bool TryGet(Value key, ColumnPath path, ConsistencyLevel consistencylevel, out ColumnOrSuperColumn ret) {
+            try {
+                ret = Get(key, path, consistencylevel);
+                return true;
+            } catch (Cassandra.NotFoundException) {
+                ret = null;
+                return false;
+            }
+        }
+
+        public bool TryGet(Value key, ColumnPath path, out ColumnOrSuperColumn ret) {
+            return TryGet(key, path, DefaultConsistencyLevel, out ret);
+        }
+
         public IList<ColumnOrSuperColumn> GetSlice(Value key, ColumnParent parent, SlicePredicate pred, ConsistencyLevel consistencylevel) {
             return _WrapValue(() => _client.get_slice(key, parent.ToThrift(), pred.ToThrift(), Helpers.Convert(consistencylevel))).Select(x => new ColumnOrSuperColumn(x)).ToList();
         }

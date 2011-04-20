@@ -108,11 +108,8 @@ namespace Tood.Server
             _conn.Insert("brian", new Cassandra.ColumnParent("users"), new Cassandra.Column("email", "brian@blucz.com", DateTime.UtcNow.Ticks));
 
             int count;
-            try {
-                count = _conn.Get("brian", new Cassandra.ColumnPath("users", "visitcount")).Column.Value;
-            } catch (Cassandra.NotFoundException) {
+            if (!_conn.TryGet("brian", new Cassandra.ColumnPath("users", "visitcount"), out count))
                 count = 0;
-            }
 
             count += 1;
             _conn.Insert("brian", new Cassandra.ColumnParent("users"), new Cassandra.Column("visitcount", count, DateTime.UtcNow.Ticks));
