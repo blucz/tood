@@ -20,9 +20,9 @@ project "Manos"
     else
         linksystemlibs "Mono.Posix"
         copyprojects {
-            "libev",
-            "libmanos",
-            "libeio",
+            "ev",
+            "manos",
+            "eio",
         }
     end
 
@@ -171,7 +171,7 @@ project "Manos"
 done "Manos"
 
 if (not platform.is("windows")) then 
-    project "libev"
+    project "ev"
         category "_Libraries"
         kind "SharedLib"
         language "C"
@@ -185,29 +185,37 @@ if (not platform.is("windows")) then
             "../manos/src/libev/event.c",
         }
 
-    done "libev"
+    done "ev"
 
-    project "libeio"
+    project "eio"
         category "_Libraries"
         kind "SharedLib"
         language "C"
         flags { "Unsafe" }
 
         includedirs "../manos/src/libeio"
+        
+        defines "_GNU_SOURCE"
 
         compilefiles {
             "../manos/src/libeio/eio.c",
         }
 
-    done "libeio"
+    done "eio"
 
-    project "libmanos"
+    project "manos"
         category "_Libraries"
         kind "SharedLib"
         language "C"
         flags { "Unsafe" }
 
-        includedirs "../manos/src/libmanos"
+        linkprojects { "ev", "eio" }
+
+        includedirs {
+            "../manos/src/libmanos",
+            "../manos/src/libev",
+            "../manos/src/libeio",
+        }
 
         compilefiles {
             "../manos/src/libmanos/manos.c",
@@ -216,5 +224,5 @@ if (not platform.is("windows")) then
             "../manos/src/libmanos/manos_socket.c",
         }
 
-    done "libmanos"
+    done "manos"
 end
