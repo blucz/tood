@@ -14,16 +14,15 @@ namespace Cassandra
         internal Exception(string message, System.Exception innerexception) : base(message, innerexception) { }
     }
 
-    public sealed class NotFoundException : Exception { internal NotFoundException(System.Exception inner) : base(inner) { } }
-    public sealed class UnavailableException : Exception { internal UnavailableException(System.Exception inner) : base(inner) { } }
-    public sealed class TimedOutException : Exception { internal TimedOutException(System.Exception inner) : base(inner) { } }
-    public sealed class InvalidRequestException : Exception { public InvalidRequestException(System.Exception inner) : base(inner) { } }
-    public sealed class AuthenticationException : Exception { public AuthenticationException(System.Exception inner) : base(inner) { } }
-    public sealed class AuthorizationException : Exception { public AuthorizationException(System.Exception inner) : base(inner) { } }
+    public sealed class NotFoundException : Exception { internal NotFoundException(Apache.Cassandra.NotFoundException inner) : base(inner) { } }
+    public sealed class UnavailableException : Exception { internal UnavailableException(Apache.Cassandra.UnavailableException inner) : base(inner) { } }
+    public sealed class TimedOutException : Exception { internal TimedOutException(Apache.Cassandra.TimedOutException inner) : base(inner) { } }
+    public sealed class InvalidRequestException : Exception { public InvalidRequestException(Apache.Cassandra.InvalidRequestException inner) : base(inner.Why, inner) { } }
+    public sealed class AuthenticationException : Exception { public AuthenticationException(Apache.Cassandra.AuthenticationException inner) : base(inner.Why, inner) { } }
+    public sealed class AuthorizationException : Exception { public AuthorizationException(Apache.Cassandra.AuthorizationException inner) : base(inner.Why, inner) { } }
 
     public enum ReplicationStrategy {
-        RackAwareStrategy,
-        RackUnawareStrategy,
+        SimpleStrategy,
         UnknownStrategy,
     }
 
@@ -100,8 +99,15 @@ namespace Cassandra
                 ColumnFamilies = new List<ColumnFamilyDefinition>();
         }
 
+        public KeySpaceDefinition Clone() {
+            var ret = (KeySpaceDefinition)MemberwiseClone();
+            ret.ColumnFamilies = ColumnFamilies.Select(x => x.Clone()).ToList();
+            ret.ReplicationStrategyOptions = ReplicationStrategyOptions.ToDictionary(x => x.Key, x => x.Value);
+            return ret;
+        }
+
         public KeySpaceDefinition() {
-            ReplicationStrategy = ReplicationStrategy.RackUnawareStrategy;
+            ReplicationStrategy = ReplicationStrategy.SimpleStrategy;
             ReplicationFactor = 1;
             ColumnFamilies = new List<ColumnFamilyDefinition>();
             ReplicationStrategyOptions = new Dictionary<string, string>();
@@ -183,17 +189,17 @@ namespace Cassandra
             SubComparatorType = Helpers.ParseOptionalComparator(def.Subcomparator_type);
             Comment = def.Comment;
             if (def.__isset.row_cache_size) RowCacheSize = def.Row_cache_size;
-            if (def.__isset.key_cache_size) RowCacheSize = def.Key_cache_size;
-            if (def.__isset.read_repair_chance) RowCacheSize = def.Read_repair_chance;
-            if (def.__isset.gc_grace_seconds) RowCacheSize = def.Gc_grace_seconds;
-            if (def.__isset.id) RowCacheSize = def.Id;
-            if (def.__isset.min_compaction_threshold) RowCacheSize = def.Min_compaction_threshold;
-            if (def.__isset.max_compaction_threshold) RowCacheSize = def.Max_compaction_threshold;
-            if (def.__isset.row_cache_save_period_in_seconds) RowCacheSize = def.Row_cache_save_period_in_seconds;
-            if (def.__isset.key_cache_save_period_in_seconds) RowCacheSize = def.Key_cache_save_period_in_seconds;
-            if (def.__isset.memtable_flush_after_mins) RowCacheSize = def.Memtable_flush_after_mins;
-            if (def.__isset.memtable_throughput_in_mb) RowCacheSize = def.Memtable_throughput_in_mb;
-            if (def.__isset.memtable_operations_in_millions) RowCacheSize = def.Memtable_operations_in_millions;
+            if (def.__isset.key_cache_size) KeyCacheSize = def.Key_cache_size;
+            if (def.__isset.read_repair_chance) ReadRepairChance = def.Read_repair_chance;
+            if (def.__isset.gc_grace_seconds) GcGraceSeconds = def.Gc_grace_seconds;
+            if (def.__isset.id) Id = def.Id;
+            if (def.__isset.min_compaction_threshold) MinCompactionThreshold = def.Min_compaction_threshold;
+            if (def.__isset.max_compaction_threshold) MaxCompactionThreshold = def.Max_compaction_threshold;
+            if (def.__isset.row_cache_save_period_in_seconds) RowCacheSavePeriodInSeconds = def.Row_cache_save_period_in_seconds;
+            if (def.__isset.key_cache_save_period_in_seconds) KeyCacheSavePeriodInSeconds = def.Key_cache_save_period_in_seconds;
+            if (def.__isset.memtable_flush_after_mins) MemtableFlushAfterMins = def.Memtable_flush_after_mins;
+            if (def.__isset.memtable_throughput_in_mb) MemtableThroughputInMb = def.Memtable_throughput_in_mb;
+            if (def.__isset.memtable_operations_in_millions) MemtableOperationsInMillions = def.Memtable_operations_in_millions;
             if (def.__isset.default_validation_class) DefaultValidationClass = Helpers.ParseOptionalValidationClass(def.Default_validation_class);
             if (def.Column_metadata != null)
                 Columns = def.Column_metadata.Select(x => new ColumnDefinition(x)).ToList();
@@ -226,6 +232,12 @@ namespace Cassandra
             if (MemtableFlushAfterMins.HasValue) ret.Memtable_flush_after_mins = MemtableFlushAfterMins.Value;
             if (MemtableThroughputInMb.HasValue) ret.Memtable_throughput_in_mb = MemtableThroughputInMb.Value;
             if (MemtableOperationsInMillions.HasValue) ret.Memtable_operations_in_millions = MemtableOperationsInMillions.Value;
+            return ret;
+        }
+
+        internal ColumnFamilyDefinition Clone() {
+            ColumnFamilyDefinition ret = (ColumnFamilyDefinition)MemberwiseClone();
+            ret.Columns = ret.Columns.ToList();
             return ret;
         }
     }
@@ -369,6 +381,8 @@ namespace Cassandra
         public Value SuperColumn {get;set;}
 
         public ColumnParent() { }
+        public ColumnParent(string columnfamily) { ColumnFamily = columnfamily; }
+        public ColumnParent(string columnfamily, Value supercolumn) : this(columnfamily) { SuperColumn = supercolumn; }
 
         internal ColumnParent(Apache.Cassandra.ColumnParent par) {
             ColumnFamily = par.Column_family;
@@ -378,7 +392,7 @@ namespace Cassandra
         internal Apache.Cassandra.ColumnParent ToThrift() {
             var ret = new Apache.Cassandra.ColumnParent();
             ret.Column_family = Helpers.EnsureField("ColumnFamily", ColumnFamily);
-            ret.Super_column = SuperColumn;
+            if (SuperColumn != null) ret.Super_column = SuperColumn;
             return ret;
         }
     }
@@ -393,6 +407,15 @@ namespace Cassandra
         public Value Column { get; set; }
 
         public ColumnPath() { }
+        public ColumnPath(string columnfamily, Value column) {
+            ColumnFamily = columnfamily;
+            Column = column;
+        }
+        public ColumnPath(string columnfamily, Value supercolumn, Value column) { 
+            ColumnFamily = columnfamily;
+            SuperColumn = supercolumn;
+            Column = column;
+        }
 
         internal ColumnPath(Apache.Cassandra.ColumnPath path) {
             ColumnFamily = path.Column_family;
@@ -855,6 +878,8 @@ namespace Cassandra
         private T _WrapValue<T>(Returns<T> a) {
             try {
                 return a();
+            } catch (Apache.Cassandra.NotFoundException e) {
+                throw new NotFoundException(e);
             } catch (Apache.Cassandra.InvalidRequestException e) {
                 throw new InvalidRequestException(e);
             } catch (Apache.Cassandra.AuthenticationException e) {
@@ -871,6 +896,8 @@ namespace Cassandra
         private void _Wrap(Action a) {
             try {
                 a();
+            } catch (Apache.Cassandra.NotFoundException e) {
+                throw new NotFoundException(e);
             } catch (Apache.Cassandra.InvalidRequestException e) {
                 throw new InvalidRequestException(e);
             } catch (Apache.Cassandra.AuthenticationException e) {
@@ -898,15 +925,13 @@ namespace Cassandra
         }
         public static ReplicationStrategy ParseReplicationStrategy(string strategy) {
             switch (strategy) {
-                case "org.apache.cassandra.locator.RackAwareStrategy":   return ReplicationStrategy.RackAwareStrategy;
-                case "org.apache.cassandra.locator.RackUnawareStrategy": return ReplicationStrategy.RackUnawareStrategy;
+                case "org.apache.cassandra.locator.SimpleStrategy":   return ReplicationStrategy.SimpleStrategy;
                 default:                                                 return ReplicationStrategy.UnknownStrategy;
             }
         }
         public static string SerializeReplicationStrategy(ReplicationStrategy strategy) {
             switch (strategy) {
-                case ReplicationStrategy.RackAwareStrategy: return "org.apache.cassandra.locator.RackAwareStrategy";
-                case ReplicationStrategy.RackUnawareStrategy: return "org.apache.cassandra.locator.RackUnawareStrategy";
+                case ReplicationStrategy.SimpleStrategy: return "org.apache.cassandra.locator.SimpleStrategy";
                 default: throw new InvalidOperationException();
             }
         }
@@ -915,6 +940,8 @@ namespace Cassandra
         }
         internal static Comparator? ParseOptionalComparator(string type) {
             if (type == null) return null;
+            int iof = type.LastIndexOf('.');
+            if (iof != -1) type = type.Substring(iof + 1);
             return (Comparator)Enum.Parse(typeof(Comparator), type, true);
         }
         internal static string SerializeValidation(Validation validation) { 
@@ -925,6 +952,8 @@ namespace Cassandra
             return ParseValidationClass(validation);
         }
         internal static Validation ParseValidationClass(string validation) {
+            int iof = validation.LastIndexOf('.');
+            if (iof != -1) validation = validation.Substring(iof + 1);
             return (Validation)Enum.Parse(typeof(Validation), validation, true);
         }
         internal static IndexType Convert(Apache.Cassandra.IndexType indexType) {
