@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
@@ -101,28 +102,41 @@ namespace Tood.Server
         }
 
         static void _HandleRoot(Manos.Http.IHttpTransaction tx) {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             tx.Response.StatusCode = 200;
             StringBuilder sb = new StringBuilder();
 
+            Console.WriteLine("1 " + sw.ElapsedMilliseconds + "ms");
             _conn.Insert("brian", new Cassandra.ColumnParent("users"), new Cassandra.Column("name", "Brian Luczkiewicz", DateTime.UtcNow.Ticks));
+            Console.WriteLine("2 " + sw.ElapsedMilliseconds + "ms");
             _conn.Insert("brian", new Cassandra.ColumnParent("users"), new Cassandra.Column("email", "brian@blucz.com", DateTime.UtcNow.Ticks));
+            Console.WriteLine("3 " + sw.ElapsedMilliseconds + "ms");
 
             int count;
             if (!_conn.TryGet("brian", new Cassandra.ColumnPath("users", "visitcount"), out count))
                 count = 0;
+            Console.WriteLine("4 " + sw.ElapsedMilliseconds + "ms");
 
             count += 1;
             _conn.Insert("brian", new Cassandra.ColumnParent("users"), new Cassandra.Column("visitcount", count, DateTime.UtcNow.Ticks));
+            Console.WriteLine("5 " + sw.ElapsedMilliseconds + "ms");
 
             var name = _conn.Get("brian", new Cassandra.ColumnPath("users", "name"));
+            Console.WriteLine("6 " + sw.ElapsedMilliseconds + "ms");
             var email = _conn.Get("brian", new Cassandra.ColumnPath("users", "email"));
+            Console.WriteLine("7 " + sw.ElapsedMilliseconds + "ms");
 
             sb.AppendLine("Name: " + name.Column.Value.ToString());
             sb.AppendLine("Email: " + email.Column.Value.ToString());
             sb.AppendLine("Visit Count: " + count);
+            Console.WriteLine("8 " + sw.ElapsedMilliseconds + "ms");
 
             tx.Response.End(sb.ToString());
+            Console.WriteLine("9 " + sw.ElapsedMilliseconds + "ms");
             tx.Response.Complete(tx.OnResponseFinished);
+            sw.Stop();
+            Console.WriteLine("services request in " + sw.ElapsedMilliseconds + "ms");
         }
     }
 }
