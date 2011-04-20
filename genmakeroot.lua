@@ -22,8 +22,8 @@ solution "Tood"
         objectsdir "obj/release"
     done "release"
 
-    include "manos_build"
-    include "fluentcassandra_build"
+    include "manos"
+    include "fluentcassandra"
     include "Server"
 
 done "Tood"
