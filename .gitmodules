@@ -1,0 +1,3 @@
+[submodule "manos"]
+	path = manos
+	url = git@github.com:blucz/manos.git
