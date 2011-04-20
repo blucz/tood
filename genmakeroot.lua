@@ -23,7 +23,7 @@ solution "Tood"
     done "release"
 
     include "manos"
-    include "fluentcassandra"
+    include "Apache.Cassandra"
     include "Server"
 
 done "Tood"

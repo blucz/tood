@@ -3,15 +3,18 @@ project "Server"
     kind "ConsoleApp"
     language "C#"
 
+    linkprojects {
+        "Manos",
+        "Apache.Cassandra",
+    }
+        
     linkfiles {
-        --"../Binaries/Aquiles",
-        --"../Binaries/Thrift",
+        "../Binaries/Thrift",
     }
 
-    linkprojects "Manos"
-
     compilefiles {
-        "main.cs"
+        "main.cs",
+        "cassandra.cs",
     }
 
 done "Server"
