@@ -1,6 +1,6 @@
-[submodule "manos"]
-	path = manos/upstream
-	url = git@github.com:blucz/manos.git
-[submodule "fluentcassandra"]
+[submodule "fluentcassandra/upstream"]
 	path = fluentcassandra/upstream
 	url = git@github.com:blucz/fluentcassandra.git
+[submodule "manos/upstream"]
+	path = manos/upstream
+	url = git@github.com:blucz/manos.git
