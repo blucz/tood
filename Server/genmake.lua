@@ -3,6 +3,11 @@ project "Server"
     kind "ConsoleApp"
     language "C#"
 
+    linksystemlibs {
+        "System",
+        "System.Core",
+    }
+
     linkprojects {
         "Manos",
         "Apache.Cassandra",
