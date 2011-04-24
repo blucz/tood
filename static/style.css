@@ -1,0 +1,108 @@
+div#welcome {
+    width: 20em;
+    height: 32.36em;
+
+    background: #fff;
+
+    margin-top: 4em;
+    margin-left: auto;
+    margin-right: auto;
+    
+    -moz-box-shadow:    0px 0px 3px 3px #666;
+    -webkit-box-shadow: 0px 0px 3px 3px #666;
+    box-shadow:         0px 0px 3px 3px #666;
+}
+
+body {
+    font-family: sans-serif;
+    padding: 0em;
+    margin: 0em;
+    background: #aaa;
+}
+
+div#login_in_progress {
+    width: 20em;
+    height: 8em; 
+    padding-top: 5.5em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div#login {
+    width: 18em;
+    padding-top:1.0em;
+    margin-left: 1.0em;
+    margin-right: 1.0em;
+}
+
+.loginheader {
+    font-size: 1.25em;
+    font-weight: 200;
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+    margin-left: 0.0em;
+    margin-right: 0.0em;
+}
+
+.logininput {
+    font-size:1.5em;
+    width: 12em;
+}
+
+.loginbutton_enabled:hover {
+    background: #f0f8ff;
+    cursor:pointer;
+}
+
+.loginbutton {
+    background:#fff;
+    float: right;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-top: 1.25em;
+    margin-left: 0.5em;
+    border: 1px solid #999;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+#login_buttons {
+    width:18em;
+}
+
+h1#title {
+    background: #282828;
+    font-weight: 100;
+    letter-spacing: 0.25em;
+    color: #fff;
+    margin: 0em;
+    text-align: center;
+    padding-top: 1.65em;
+    padding-bottom: 1.55em;
+    vertical-align: middle;
+    font-size: 4.045em;
+}
+
+.login_in_progress_text {
+    color: #333;
+    font-weight: normal;
+    font-size: 1.5em;
+}
+
+#login_failed {
+    position: absolute;
+    text-align: center;
+    border-radius: 12px;
+    border: 2px solid #95a7bf;
+
+    width: 15.0em;
+    margin-left: 2.0em;
+    margin-right: 2.0em;
+    margin-top: 13em;
+
+    color: #95a7bf;
+    height: 1.0em;
+    padding: 0.5em;
+}

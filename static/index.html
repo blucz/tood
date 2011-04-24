@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>tood</title>
+        <script src="jquery.js"></script>
+        <script src="service.js"></script>
+        <script src="login.js"></script>
+        <script src="tood.js"></script>
+        <link rel="stylesheet" href="style.css" /> 
+    </head>
+    <body>
+        <div id="welcome" style='display:none'>
+            <div id='login_failed' style='display:none' class='login_pane'>
+                Login failed
+            </div>
+            
+            <h1 id='title'>tood</h1>
+
+            <div id='login' style='display:none' class='login_pane'>
+                <form action="">
+                    <h4 class='loginheader'>email</h4>
+                    <input type='text' id='login_email' class='logininput' />
+                    <h4 class='loginheader'>password</h4>
+                    <input type='password' id='login_password' class='logininput' />
+                    <div id='login_buttons'>
+                        <input type='submit' value='Sign In' class='loginbutton' id='login_signin' />
+                        <input type='button' value='Sign Up' class='loginbutton' id='login_signup' />
+                    </div>
+                </form>
+            </div>
+
+            <div id='login_in_progress' style='display:none' class='login_pane'>
+                <img src='loading.gif' alt='loading'></img>
+                <h4 class='login_in_progress_text' id='login_signin_text' style='display:none'>signing in</h4>
+                <h4 class='login_in_progress_text' id='login_signup_text' style='display:none'>signing up</h4>
+            </div>
+
+        </div>
+        
+        <div id="app" style='display:none'>
+
+        </div>
+    </body>
+</html>
