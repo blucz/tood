@@ -729,6 +729,7 @@ namespace Cassandra
 
         public Connection(string host, int port, int timeout) {
             _socket = new TSocket(host, port, timeout);
+            _socket.TcpClient.NoDelay = true;
             _transport = new TFramedTransport(_socket);
             _transport.Open();
             _protocol = new TBinaryProtocol(_transport);
